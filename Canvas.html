@@ -1,0 +1,81 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creacion y usos del canvas.</title>
+    <link href="IMG/1a-swt.png" rel="shortcut icon" type="imagenes/jpg">
+    <link href="Css - Js/Combo.css" rel="stylesheet" type="text/css">
+    <style>
+        .B_01 {
+            font-size: 8pt;
+            font-weight: bold;
+            font-family: broadway;
+            color: rgb(92, 7, 7);
+            background: #ffffff;
+            width: 100px;
+            height: 40px;
+            border-radius: 2px;
+            border-style: groove;
+            border-color: rgb(255, 239, 16);
+            border-width: 4px;
+        }
+
+        .B_01:hover {
+            color: #ec5e0c;
+            background: white;
+        }
+    </style>
+</head>
+
+<body background="IMG/estrellas.jpg">
+    <center>
+
+        <p class="encabezado_L1">Creación y usos del canvas.</p>
+        <canvas id="canvita" width="300" height="150" style="border:5px solid rgb(255, 255, 255)">Su sistema no está actualizado</canvas>
+        <br><br><br><br>
+        <canvas id="Canvas" width="300" height="150" style="border:5px solid rgb(255, 255, 255)"></canvas>
+        <br>
+        <button class="B_01" onclick="changeDirection()">Cambiar Dirección</button>
+
+        <script>
+            let c = document.getElementById("canvita");
+            let ctx1 = c.getContext("2d");
+
+            // Crear un gradiente
+            let grd = ctx1.createLinearGradient(0, 0, 200, 0);
+            grd.addColorStop(0, "blue");
+            grd.addColorStop(0.1, "Gold");
+            grd.addColorStop(0.12, "gray");
+            grd.addColorStop(0.25, "white");
+            grd.addColorStop(0.75, "red");
+            grd.addColorStop(1, "green");
+
+            // Asignar un rectángulo con el gradiente
+            ctx1.fillStyle = grd;
+            ctx1.fillRect(10, 10, 180, 100);
+
+            let a = document.getElementById("Canvas");
+            let ctx2 = a.getContext("2d");
+            let clockwise = true;
+
+            function drawArc() {
+                ctx2.clearRect(0, 0, a.width, a.height);
+                ctx2.beginPath();
+                ctx2.arc(100, 100, 40, 0, 1.75 * Math.PI, clockwise);
+                ctx2.stroke();
+                ctx2.strokeStyle = "white"
+            }
+
+            function changeDirection() {
+                clockwise = !clockwise; // Cambiar la dirección
+                drawArc();
+            }
+
+            drawArc();
+        </script>
+
+    </center>
+</body>
+
+</html>

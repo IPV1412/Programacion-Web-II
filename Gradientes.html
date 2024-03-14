@@ -1,0 +1,94 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGradientes en el canvas.</title>
+    <link href="IMG/1a-swt.png" rel="shortcut icon" type="imagenes/jpg">
+    <link href="Css - Js/Combo.css" rel="stylesheet" type="text/css">
+</head>
+
+<body background="IMG/estrellas.jpg">
+    <center>
+
+        <p class="encabezado_L1">Creación y usos del canvas.</p>
+
+        <!-canvas requiere por el momento Javascript->
+            <canvas id="A" width="300" height="150" style="border:5px solid rgb(255, 255, 255)"> Su sistema no esta actualizado </canvas>
+            <br><br><br><br>
+            <canvas id="B" width="300" height="150" style="border:5px solid rgb(255, 255, 255)"> Su sistema no esta actualizado </canvas>
+            <br><br><br><br>
+            <canvas id="C" width="300" height="150" style="border:5px solid rgb(255, 255, 255)"> Su sistema no esta actualizado </canvas>
+            <script>
+                <!------------------- A ------------------------!>
+                let a = document.getElementById("A");
+                let ctxA = a.getContext("2d");
+    
+                // Crear un gradiente
+                let grdA = ctxA.createLinearGradient(0, 0, 200, 0);
+                grdA.addColorStop(0, "blue");
+                grdA.addColorStop(0.1, "Gold");
+                grdA.addColorStop(0.12, "gray");
+                grdA.addColorStop(0.25, "white");
+                grdA.addColorStop(0.75, "red");
+                grdA.addColorStop(1, "green");
+    
+                ctxA.fillStyle = grdA;// asigna el gradiente en lugar de un color solido.
+                ctxA.fillRect(10, 10, 180, 100);
+    
+    
+                <!------------------- B ------------------------!>
+                let b = document.getElementById("B");
+                let ctxB = b.getContext("2d");
+    
+                // Crear un gradiente
+                let grdB = ctxB.createLinearGradient(0, 150, 300, 0); // (Xinicial, Yinicial,Xfinal, Yfinal
+                
+                // sugerencia es poner el inical al medio o en 0 del objeto,
+                grdB.addColorStop(0, "blue");
+                grdB.addColorStop(0.1, "Gold");
+                grdB.addColorStop(0.12, "gray");
+                grdB.addColorStop(0.25, "white");
+                grdB.addColorStop(0.75, "red");
+                grdB.addColorStop(1, "green");
+    
+                ctxB.fillStyle = grdB;// asigna el gradiente en lugar de un color solido.
+                ctxB.fillRect(0, 0, 300, 150);
+    
+                <!------------------- C ------------------------!>
+                let c = document.getElementById("C");
+                let ctx = c.getContext("2d");
+    
+                // for (i=0 ->1200)
+                let grd = ctx.createRadialGradient(
+                    30, 50, 5,
+                    50, 50, 100
+                ); // el orden del radio indica donde empieza
+                /*
+                x0, y0 = coordenadass iniciales.
+                x1, y1 = coordenadas finales.
+                 */
+                grd.addColorStop(0, "Turquoise"); // 0.000-1.00
+                grd.addColorStop(.2, "black");
+                grd.addColorStop(.4, "DarkTurquoise");
+                grd.addColorStop(.6, "black");
+                grd.addColorStop(.8, "MediumTurquoise\t");
+
+                grd.addColorStop(1, "green");// 100%= 1, 50%=.5
+
+                ctx.fillStyle = grd;
+                ctx.fillRect(10, 10, 150, 80); // x,y, ancho y alto
+                ctx.font = "30px chiller";
+                ctx.fillText("JHONY", 180, 90);
+                ctx.beginPath();
+                ctx.fillStyle = "Khaki";
+                ctx.font = "30px chiller";
+                ctx.fillText("JHONY", 180, 120);
+                ctx.fillStyle = "black";
+                ctx.strokeText("JHONY", 180, 150);
+
+            </script>
+    </center>
+</body>
+</html>
+
