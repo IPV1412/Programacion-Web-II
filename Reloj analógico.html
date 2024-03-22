@@ -1,0 +1,116 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Reloj analógico.</title>
+    <link rel="stylesheet" crossorigin="anonymous"
+        href="https://gc.kis.v2.scr.kaspersky-labs.com/E3E8934C-235A-4B0E-825A-35A08381A191/abn/main.css?attr=aHR0cHM6Ly9jZG4uZGlzY29yZGFwcC5jb20vYXR0YWNobWVudHMvMTIyMDM4Njk2NjkwMjgwMDQyNC8xMjIwNDA4MDA0NTU4NzIxMTM3L2luZGV4Lmh0bWw_ZXg9NjYwZWQ0ODYmaXM9NjVmYzVmODYmaG09MjZmM2RjYTQ3NGUwYzEyYjk5MTdkMDg0ZDMyMDhkMmRiMWFlZGFkNWY5MTU2MzI2NmVlYmU0MjE4OGRjMzU4NCY" />
+    <link href="IMG/1a-swt.png" rel="shortcut icon" type="imagenes/jpg">
+    <link href="Css - Js/Combo.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript"
+        src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=d8TSR5IpUF7nEG8TfVcmD58g9BV9xWf_uQL48yESXZVq463EnIDZHkBK9_LL0XVdtGMPwwE98IEIvV6NJssRl1s9qWGxYjU8_CTQqiI-HoZADl7N5oiZTKWAQiIP7CQHfA9bQ24fLEV-oXbiPneuvY7Vc86bV_g_PPOSTXaFbjfI19c8SCvWVAiidrLpLyfDV2RvNA7TYikRwCi6rSsbIb9nAG5HPIH7Ktv-5V40ZqfiALTRb3bUdevAFqcve5La7EOugb2XpRZ-NofHkXFeFA"
+        charset="UTF-8">
+        </script>
+
+</head>
+
+<center>
+
+    <body background="IMG/Crono.jpg">
+        <p class="encabezado_L1">Reloj analógico.</p>
+        <br><br>
+        <canvas id="canvita" width="800" height="800"
+            style="border:8px solid rgba(255, 217, 4, 0.945); background-color: transparent;">
+        </canvas>
+        <script>
+            let canvas = document.getElementById("canvita");
+            let ctx = canvas.getContext("2d");
+            let radio = canvas.height / 2;
+
+            ctx.translate(radio, radio); // mover el eje de lugar.
+            radio = radio * 0.80;
+
+            dibujarReloj();  // public Update{}
+            setInterval(dibujarReloj, 1000);
+            function dibujarReloj() {
+                cara(ctx, radio);
+                numeros(ctx, radio);
+                hora(ctx, radio);
+            }
+
+            function cara(ctx, radio) {
+                let grad = ctx.createRadialGradient(
+                    0, 0, radio * 0.90, 0, 0, radio * 1.10
+                );
+                grad.addColorStop(0, "#FF6600");
+                grad.addColorStop(0.5, "#CCCCFF");
+                grad.addColorStop(1, "#FF6600");
+
+                ctx.beginPath();
+                ctx.arc(0, 0, radio, 0, 2 * Math.PI);
+                ctx.fillStyle = "white";
+                ctx.fill();
+
+                ctx.strokeStyle = grad;
+                ctx.lineWidth = radio * 0.1;
+                ctx.stroke();
+
+                // punto central de las manecillas
+                ctx.beginPath();
+                ctx.arc(0, 0, radio * 0.1, 0, 2 * Math.PI);
+                ctx.fillStyle = "#CC6600";
+                ctx.fill();
+            }
+
+            function numeros(ctx, radio) {
+                ctx.font = radio * 0.14 + "px arial";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                for (let valor = 1; valor < 13; valor++) {
+                    let angulo = valor * Math.PI / 6;
+                    ctx.rotate(angulo);
+                    ctx.translate(0, -radio * 0.82);
+                    ctx.rotate(-angulo);
+                    ctx.fillText(valor.toString(), 0, 0);
+                    ctx.rotate(angulo);
+                    ctx.translate(0, radio * 0.82);
+                    ctx.rotate(-angulo);
+                }
+            }
+
+            function hora(ctx, radio) {
+                let ahorita = new Date();
+                let hora = ahorita.getHours();
+                let minutos = ahorita.getMinutes();
+                let segundos = ahorita.getSeconds();
+
+                // hora
+                hora = hora % 12;
+                hora = (hora * Math.PI / 6) +
+                    (minutos * Math.PI / (6 * 60)) +
+                    (segundos * Math.PI / (360 * 60));
+                manecilla(ctx, hora, radio * 0.5, radio * 0.07);
+                // Minutos
+                minutos = (minutos * Math.PI / 30) +
+                    (segundos * Math.PI / (30 * 60));
+                manecilla(ctx, minutos, radio * 0.75, radio * 0.05);
+                // Segundos
+                segundos = (segundos * Math.PI / 30);
+                manecilla(ctx, segundos, radio * 0.85, radio * 0.02);
+            }
+
+            function manecilla(ctx, posicion, largo, ancho) {
+                ctx.beginPath();
+                ctx.lineWidth = ancho;
+                ctx.lineCap = "round";
+                ctx.moveTo(0, 0);
+                ctx.rotate(posicion);
+                ctx.lineTo(0, -largo);
+                ctx.stroke();
+                ctx.rotate(-posicion);
+            }
+        </script>
+    </body>
+</center>
+
+</html>

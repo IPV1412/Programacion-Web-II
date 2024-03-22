@@ -1,0 +1,79 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Reloj digital.</title>
+    <link href="IMG/1a-swt.png" rel="shortcut icon" type="imagenes/jpg">
+    <link href="Css - Js/Combo.css" rel="stylesheet" type="text/css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        canvas {
+            border: 5px solid rgb(238, 95, 0);
+            background-color: rgb(0, 0, 0);
+        }
+    </style>
+</head>
+
+<center>
+
+    <body background="IMG/estrellas.jpg">
+        <p class="encabezado_L1">Crear un reloj digital.</p><br>
+        <canvas id="reloj" width="600" height="300"></canvas><br><br>
+        <p class="encabezado_J2">Jonathan Nava Noguez IPV1412</p>
+
+        <script>
+            const canvas = document.getElementById('reloj');
+            const ctx = canvas.getContext('2d');
+
+            function drawClock() {
+                // Obtener la fecha y hora actual
+                const now = new Date();
+                const hours = now.getHours();
+                const minutes = now.getMinutes();
+                const seconds = now.getSeconds();
+
+                // Limpiar el canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Dibujar el degradado en forma de "X"
+                const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                gradient.addColorStop(0, 'red');
+                gradient.addColorStop(1, 'blue');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Dibujar el texto del reloj centrado
+                ctx.font = '60px Arial';
+                ctx.fillStyle = 'white';
+                const text = pad(hours, 2) + ':' + pad(minutes, 2) + ':' + pad(seconds, 2);
+                const textWidth = ctx.measureText(text).width;
+                ctx.fillText(text, (canvas.width - textWidth) / 2, canvas.height / 2);
+
+                // Dibujar el contorno del reloj
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 4;
+                ctx.strokeRect(130, 75, 350, 145);
+            }
+
+            // Función para agregar ceros delante de números menores a 10
+            function pad(num, size) {
+                let s = num + '';
+                while (s.length < size) s = '0' + s;
+                return s;
+            }
+
+            // Actualizar el reloj cada segundo
+            setInterval(drawClock, 1000);
+            drawClock();
+        </script>
+    </body>
+</center>
+
+</html>
