@@ -1,0 +1,52 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradientes en el canvas II.</title>
+    <link href="IMG/1a-swt.png" rel="shortcut icon" type="imagenes/jpg">
+    <link href="Css - Js/Combo.css" rel="stylesheet" type="text/css">
+</head>
+<body background="IMG/estrellas.jpg">
+    <center>
+        <p class="encabezado_L1">Efectos y gradientes en un canvas.</p>
+        <canvas id="Estrella" width="500" height="500" style="border:5px solid rgb(255, 174, 0)"></canvas>
+        <script>
+            const Estrella = document.getElementById('Estrella'); // Corregir el id del canvas
+            const ctx = Estrella.getContext('2d');
+            const centerX = Estrella.width / 2;
+            const centerY = Estrella.height / 2;
+            const numPoints = 5;
+            const outerRadius = 200; 
+            const innerRadius = 100; 
+
+            function drawStar() {
+                const angleIncrement = Math.PI / numPoints;
+                const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, outerRadius);
+                gradient.addColorStop(0.1, 'blue');
+                gradient.addColorStop(0.5, 'red');
+                gradient.addColorStop(0.2, 'green');
+                gradient.addColorStop(0.4, 'yellow');
+                gradient.addColorStop(0.6, 'orange');
+                gradient.addColorStop(1, 'black');
+                ctx.fillStyle = gradient;
+
+                // Dibujar la estrella
+                ctx.beginPath();
+                for (let i = 0; i < numPoints * 2; i++) {
+                    const radius = i % 2 === 0 ? outerRadius : innerRadius;
+                    const x = centerX + radius * Math.cos(i * Math.PI / numPoints - Math.PI / 2);
+                    const y = centerY + radius * Math.sin(i * Math.PI / numPoints - Math.PI / 2);
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.closePath();
+                ctx.fill();
+            }
+            drawStar();
+        </script>
+    </center>
+</body>
+</html>

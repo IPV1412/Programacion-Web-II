@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dibujo.</title>
+    <link href="IMG/1a-swt.png" rel="shortcut icon" type="imagenes/jpg">
+    <link href="Css - Js/Combo.css" rel="stylesheet" type="text/css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        canvas {
+            border: 5px solid rgb(238, 95, 0);
+            background-color: rgb(0, 0, 0);
+        }
+    </style>
+</head>
+
+<body background="IMG/estrellas.jpg" onload="iniciarJuego()">
+    <center>
+        <p class="encabezado_L1">Pintar con teclado.</p>
+        <canvas id="Canvas" width="800" height="570"></canvas>
+        <p class="encabezado_J2">Jonathan Nava Noguez IPV1412</p>
+    </center>
+
+    <script>
+        let jugador;
+        let rastro = [];
+
+        function iniciarJuego() {
+            miAreaJuego.inicar();
+            jugador = new componente(40, 40, "white", 25, 150);
+        }
+
+        let miAreaJuego = {
+            canvas: document.getElementById("Canvas"),
+            inicar: function () {
+                this.context = this.canvas.getContext("2d");
+                this.intervalArea = setInterval(ActualizarArea, 20);
+                window.addEventListener('keydown', function (e) {
+                    miAreaJuego.keys = (miAreaJuego.keys || []);
+                    miAreaJuego.keys[e.keyCode] = true;
+                })
+                window.addEventListener('keyup', function (e) {
+                    miAreaJuego.keys[e.keyCode] = false;
+                })
+            },
+            clear: function () {
+                this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            }
+        };
+
+        function componente(ancho, alto, color, x, y) {
+            this.width = ancho;
+            this.height = alto;
+            this.x = x;
+            this.y = y;
+            this.speedX = 0;
+            this.speedY = 0;
+            this.update = function () {
+                ctx = miAreaJuego.context;
+                ctx.fillStyle = color;
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+            };
+            this.nuevaPos = function () {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                rastro.push({ x: this.x, y: this.y });
+            };
+        }
+
+        function ActualizarArea() {
+            miAreaJuego.clear();
+            jugador.speedX = 0;
+            jugador.speedY = 0;
+            if (miAreaJuego.keys && (miAreaJuego.keys[37] || miAreaJuego.keys[65])) {
+                jugador.speedX = -1;
+            }
+            if (miAreaJuego.keys && miAreaJuego.keys[39]) {
+                jugador.speedX = 1;
+            }
+            if (miAreaJuego.keys && (miAreaJuego.keys[38] || miAreaJuego.keys[87])) {
+                jugador.speedY = -1;
+            }
+            if (miAreaJuego.keys && miAreaJuego.keys[40]) {
+                jugador.speedY = 1;
+            }
+            if (miAreaJuego.keys && miAreaJuego.keys[27]) {
+                alert("Voy a salir del juego");
+                clearInterval(miAreaJuego.intervalArea);
+            }
+            jugador.nuevaPos();
+            jugador.update();
+
+            ctx = miAreaJuego.context;
+            ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+            for (let i = 0; i < rastro.length; i++) {
+                ctx.fillRect(rastro[i].x, rastro[i].y, jugador.width, jugador.height);
+            }
+        }
+    </script>
+    </body>
+
+</html>

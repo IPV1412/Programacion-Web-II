@@ -1,0 +1,102 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cubito magico</title>
+    <link href="IMG/1a-swt.png" rel="shortcut icon" type="imagenes/jpg">
+    <link href="Css - Js/Combo.css" rel="stylesheet" type="text/css">
+    <style>
+        canvas {
+            border: 5px solid rgb(255, 123, 0);
+            background-color: #f1f1f1;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+    </style>
+</head>
+<body onload="iniciarJuego()" background="IMG/noche.jpg" >
+    <center>   
+        <script>
+            let jugador;
+
+            function iniciarJuego() {
+                miAreaJuego.inicar();
+                jugador = new componente(40, 40, "Black", 25, 150);
+            }
+
+            let miAreaJuego = {
+                canvas: document.createElement("canvas"),
+                inicar: function () {
+                    this.canvas.width = 800;
+                    this.canvas.height = 570;
+                    this.context = this.canvas.getContext("2d");
+                    document.body.insertBefore(this.canvas,
+                        document.body.childNodes[0]);
+                    this.intervalArea = setInterval(ActualizarArea, 20);
+                    window.addEventListener('keydown', function (e) {
+                        miAreaJuego.keys = (miAreaJuego.keys || []);
+                        miAreaJuego.keys[e.keyCode] = true;
+                    })
+                    window.addEventListener('keyup', function (e) {
+                        miAreaJuego.keys[e.keyCode] = false;
+                    })
+                },
+                clear: function () {
+                    this.context.clearRect(0, 0,
+                        this.canvas.width, this.canvas.height);
+                }
+            };
+
+            function componente(ancho, alto, color, x, y) {
+                this.width = ancho;
+                this.height = alto;
+                this.x = x;
+                this.y = y;
+                this.speedX = 0;
+                this.speedY = 0;
+                this.update = function () {
+                    ctx = miAreaJuego.context;
+                    ctx.fillStyle = color;
+                    ctx.fillRect(this.x, this.y, this.width, this.height);
+                };
+                this.nuevaPos = function () {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                };
+            }
+
+            function ActualizarArea() {
+                miAreaJuego.clear();
+                jugador.speedX = 0;
+                jugador.speedY = 0;
+                if (miAreaJuego.keys && (miAreaJuego.keys[37] || miAreaJuego.keys[65])) {
+                    jugador.speedX = -1;
+                }
+                if (miAreaJuego.keys && miAreaJuego.keys[39]) {
+                    jugador.speedX = 1;
+                }
+                if (miAreaJuego.keys && (miAreaJuego.keys[38] || miAreaJuego.keys[87])) {
+                    jugador.speedY = -1;
+                }
+                if (miAreaJuego.keys && miAreaJuego.keys[40]) {
+                    jugador.speedY = 1;
+                }
+                if (miAreaJuego.keys && miAreaJuego.keys[27]) {
+                    alert("Voy a salir del juego");
+                    clearInterval(miAreaJuego.intervalArea);
+                }
+                jugador.nuevaPos();
+                jugador.update();
+
+            }
+        </script>
+    </center>
+</body>
+
+</html>
