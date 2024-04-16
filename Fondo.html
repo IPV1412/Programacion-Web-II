@@ -1,0 +1,139 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link href="IMG/1a-swt.png" rel="shortcut icon" type="imagenes/jpg">
+    <link rel="stylesheet" media="all" href="Css - Js/style.css" />
+    <link rel="stylesheet" media="all" href="Css - Js/responsive.css" />
+    <title>Fondo de Windows</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color:#000000;
+            height: 100%;
+            width: 100%;
+        }
+
+        canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="screensaver" width="1500" height="800"></canvas>
+    <audio id="backgroundMusic" loop>
+        <source src="IMG/GAS GAS GAS - (Metal Cover by Little V).mp3" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+      </audio>
+    <script>
+
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        backgroundMusic.play();
+
+        const canvas = document.getElementById('screensaver');
+        const ctx = canvas.getContext('2d');
+        const numLines = 50; // Número de líneas
+        const lineSpeedMin = 1; // Velocidad mínima de las líneas
+        const lineSpeedMax = 10; // Velocidad máxima de las líneas
+        const lineWidth = 4; // Ancho de las líneas
+        const lineLength = 550; // Longitud de las líneas
+        const colorChangeEnabled = true;
+
+        const lines = [];
+        const triangles = [];
+        for (let i = 0; i < numLines; i++) {
+            lines.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                speed: Math.random() * (lineSpeedMax - lineSpeedMin) + lineSpeedMin,
+                color: getRandomColor()
+            });
+        }
+
+        for (let i = 0; i < numLines; i++) {
+            triangles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: Math.random() * 4 - 2,
+                vy: Math.random() * 4 - 2,
+                size: Math.random() * 30 + 10,
+                color: getRandomColor()
+            });
+        }
+
+        function drawLines() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            lines.forEach(line => {
+                ctx.beginPath();
+                ctx.moveTo(line.x, line.y);
+                ctx.lineTo(line.x + lineLength, line.y);
+                ctx.strokeStyle = line.color;
+                ctx.lineWidth = lineWidth;
+                ctx.stroke();
+                line.x += line.speed;
+                if (line.x > canvas.width) {
+                    line.x = -lineLength;
+                    if (colorChangeEnabled) {
+                        line.color = getRandomColor();
+                    }
+                }
+            });
+        }
+
+        function drawTriangles() {
+            triangles.forEach(triangle => {
+                ctx.beginPath();
+                ctx.moveTo(triangle.x, triangle.y);
+                ctx.lineTo(triangle.x + triangle.size, triangle.y);
+                ctx.lineTo(triangle.x + triangle.size / 2, triangle.y - triangle.size);
+                ctx.closePath();
+                ctx.fillStyle = triangle.color;
+                ctx.fill();
+
+                triangle.x += triangle.vx;
+                triangle.y += triangle.vy;
+
+                if (triangle.x + triangle.size > canvas.width || triangle.x < 0) {
+                    triangle.vx *= -1;
+                }
+                if (triangle.y + triangle.size > canvas.height || triangle.y < 0) {
+                    triangle.vy *= -1;
+                }
+            });
+        }
+
+        function getRandomColor() {
+            const r = Math.floor(Math.random() * 256);
+            const g = Math.floor(Math.random() * 256);
+            const b = Math.floor(Math.random() * 256);
+            const alpha = 0.5; // Opacidad
+            return `rgba(${r},${g},${b},${alpha})`;
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        function draw() {
+            drawLines();
+            drawTriangles();
+            requestAnimationFrame(draw);
+        }
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        draw();
+    </script>
+</body>
+
+</html>
