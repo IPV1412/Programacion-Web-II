@@ -1,0 +1,61 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <link href= "IMG/1a-swt.png" rel="shortcut icon" type="imagenes/jpg">
+  <link rel="stylesheet" media="all" href="Css - Js/style.css" />
+  <link rel="stylesheet" media="all" href="Css - Js/responsive.css"/>
+  <title>Pintar con ratón.</title>
+    <style>
+        #lienzo {
+            border: 5px solid #ff7300;
+            cursor: crosshair;
+        }
+    </style>
+</head>
+
+<body background="IMG/ART.png">
+    <canvas id="lienzo" width="800" height="600"></canvas>
+    <script>
+        // Obtener el canvas y el contexto
+        const canvas = document.getElementById('lienzo');
+        const ctx = canvas.getContext('2d');
+
+        // Variables para el color y el tamaño del pincel
+        let color = '#000000'; // Color inicial
+        let radius = 5; // Tamaño del pincel
+
+        // Cambiar el color del pincel aleatoriamente
+        function cambiarColor() {
+            const randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
+            color = randomColor;
+        }
+
+        // Dibujar en el canvas
+        function dibujar(e) {
+            if (e.buttons !== 1) return; // Si el botón izquierdo del ratón no está presionado, no dibujar
+            ctx.beginPath();
+            ctx.fillStyle = color;
+            ctx.arc(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop, radius, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+
+        // Evento de ratón para dibujar
+        canvas.addEventListener('mousemove', dibujar);
+
+        // Evento de clic derecho para cambiar el color del pincel
+        canvas.addEventListener('contextmenu', function (e) {
+            e.preventDefault(); // Evita que aparezca el menú contextual
+            cambiarColor();
+        });
+
+        // Evento de rueda del ratón para cambiar el tamaño del pincel
+        canvas.addEventListener('wheel', function (e) {
+            e.preventDefault(); // Evita el comportamiento predeterminado del desplazamiento
+            radius += e.deltaY * -0.1; // Ajusta el tamaño del pincel según el desplazamiento de la rueda
+            // Asegúrate de que el tamaño del pincel no sea menor que 1
+            radius = Math.max(1, radius);
+        });
+    </script>
+</body>
+
+</html>

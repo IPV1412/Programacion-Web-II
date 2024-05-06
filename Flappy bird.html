@@ -1,0 +1,265 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <link href= "IMG/1a-swt.png" rel="shortcut icon" type="imagenes/jpg">
+  <link rel="stylesheet" media="all" href="Css - Js/style.css" />
+  <link rel="stylesheet" media="all" href="Css - Js/responsive.css"/>
+  <title>Flapy Bird.</title>
+    <style>
+        canvas {
+            border: 5px solid rgb(255, 255, 255);
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body onload="iniciarJuego()" background="IMG/estrellas.jpg">
+<!-- <canvas> -->
+<script>
+    let jugador;
+    let obstaculos = []; // un arreglo de obstaculos.
+    let puntaje;
+    let fondo;
+    let gameOverSound;
+    let mainMusic;
+
+    function iniciarJuego() {
+        miAreaJuego.inicar();
+        fondo = new componente(800, 570, "IMG/bg.png", 0, 0, "fondo");
+        puntaje = new componente("40px", "Consolas", "black", 500, 50, "texto");
+        jugador = new componente(60, 48, "IMG/flappy.png", 10, 120, "imagen");
+        gameOverSound = new sound("IMG/sonido1.wav");
+        mainMusic = new sound("IMG/god.mp3");
+        mainMusic.vol(0.5);
+        mainMusic.play();
+    }
+
+    let miAreaJuego = {
+        canvas: document.createElement("canvas"),
+        inicar: function () {
+            this.canvas.width = 800;
+            this.canvas.height = 570;
+            this.canvas.style.cursor = "none"; // esconde el cursor del ratón.
+            this.context = this.canvas.getContext("2d");
+            document.body.insertBefore(this.canvas,
+                document.body.childNodes[0]);
+            this.numFrame = 0;
+            this.intervalArea = setInterval(ActualizarArea, 20);
+            window.addEventListener("mousemove", function (e) {
+                    miAreaJuego.x = e.pageX;
+                    miAreaJuego.y = e.pageY;
+                }
+            )
+            window.addEventListener('keydown', function (e) {
+                miAreaJuego.keys = (miAreaJuego.keys || []);
+                miAreaJuego.keys[e.keyCode] = true;
+            })
+            window.addEventListener('keyup', function (e) {
+                miAreaJuego.keys[e.keyCode] = false;
+            })
+        },
+        clear: function () {
+            this.context.clearRect(0, 0,
+                this.canvas.width, this.canvas.height);
+        },
+        stop: function () {
+            clearInterval(this.intervalArea);
+        }
+    };
+
+    function cadaIntervalo(n) {
+        if ((miAreaJuego.numFrame / n) % 1 == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    function componente(ancho, alto, color, x, y, tipo) {
+        this.tipo = tipo;
+        if (tipo == "imagen" || tipo == "fondo") {
+            this.image = new Image();
+            this.image.src = color;
+        }
+        this.width = ancho;
+        this.height = alto;
+        this.x = x;
+        this.y = y;
+        this.speedX = 0;
+        this.speedY = 0;
+
+        this.gravedad = 0.005;
+        this.velGravedad = 0;
+
+        this.update = function () {
+            ctx = miAreaJuego.context;
+            if (this.tipo == "texto") {
+                ctx.font = this.width + " " + this.height; // 30px Colsolas
+                ctx.fillStyle = color;
+                ctx.fillText(this.text, this.x, this.y);
+            } else if (this.tipo == "imagen" || this.tipo == "fondo") {
+                ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+                if (this.tipo == "fondo") {
+                    ctx.drawImage(this.image, (this.x + this.width),
+                        this.y, this.width, this.height)
+                }
+            } else {
+                ctx.fillStyle = color;
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+            }
+        };
+        this.nuevaPos = function () {
+            this.velGravedad += this.gravedad;
+            this.x += this.speedX;
+            this.y += this.speedY + this.velGravedad;
+            this.tocaPiso();
+            this.tocaTecho();
+            this.tocaParedIzq();
+            if (this.tipo == "fondo") {
+                if (this.x == -(this.width)) {
+                    this.x = 0;
+                }
+                this.y = 0;
+            }
+        };
+        this.tocaTecho = function () {
+            if (this.y < 0) {
+                this.y = 0;
+            }
+        }
+
+        this.tocaParedIzq = function () {
+            if (this.x < 0) {
+                this.x = 0;
+            }
+        }
+
+        this.tocaPiso = function () {
+            let piso = miAreaJuego.canvas.height - this.height;
+            if (this.y > piso) {
+                this.y = piso;
+            }
+        };
+
+        this.chocaste = function (otroObj) {
+            // el cuerpo principal.
+            let izq = this.x;
+            let der = this.x + (this.width);
+            let cabeza = this.y;
+            let pies = this.y + (this.height);
+            // el otro ;)
+            let izqObj = otroObj.x;
+            let derObj = otroObj.x + (otroObj.width);
+            let cabezaObj = otroObj.y;
+            let piesObj = otroObj.y + (otroObj.height);
+            // choque
+            let choco = true;
+            if (
+                (pies < cabezaObj) || (cabeza > piesObj) ||
+                (der < izqObj) || (izq > derObj)
+                /*
+                false,false,false,false
+                 */
+
+            ) {
+                choco = false;
+            }
+            return choco;
+        }
+    }
+
+    function ActualizarArea() {
+        let x, y, altura, hueco, alturaMin, alturaMax, huecoMin, huecoMax;
+        for (let index = 0; index < obstaculos.length; index += 1) {
+            if (jugador.chocaste(obstaculos[index])) {
+                mainMusic.stop();
+                gameOverSound.play();
+
+                miAreaJuego.stop();
+                return;
+            }
+        }
+        let vel = 5;
+        let velObstaculo = 2;
+        miAreaJuego.clear();
+        if (miAreaJuego.x && miAreaJuego.y) {
+            jugador.x = miAreaJuego.x;
+            jugador.y = miAreaJuego.y;
+        }
+        fondo.speedX = -1;
+        fondo.nuevaPos();
+        fondo.update();  //capa z =0;
+        miAreaJuego.numFrame += 1;
+
+        function obstacleCreation() {
+            x = miAreaJuego.canvas.width;
+            alturaMin = 20;
+            alturaMax = 200;
+            altura = Math.floor(Math.random() * (alturaMax - alturaMin + 1) + alturaMin);
+            huecoMin = 50;
+            huecoMax = 200;
+            hueco = Math.floor(Math.random() * (huecoMax - huecoMin + 1) + huecoMin);
+            y = miAreaJuego.canvas.height - 200;
+            obstaculos.push(new componente(30, altura, "orange", x, 0));
+            obstaculos.push(new componente(30, x - altura - hueco, "orange", x, altura + hueco));
+        }
+
+        if (miAreaJuego.numFrame == 1 || cadaIntervalo(200)) {
+            obstacleCreation();
+        }
+        for (let index = 0; index < obstaculos.length; index += 1) {
+            obstaculos[index].x += -1 * velObstaculo;
+            obstaculos[index].update(); // capa z =1
+        }
+
+
+        jugador.speedX = 0;
+        jugador.speedY = 0;
+
+        if (miAreaJuego.keys && (miAreaJuego.keys [37] || miAreaJuego.keys[65])) {
+            jugador.speedX = -1 * vel;
+            //    jugador.gravedad = 0.1;
+        }
+        if (miAreaJuego.keys && miAreaJuego.keys [39]) {
+            jugador.speedX = 1 * vel;
+            //jugador.gravedad = -0.2;
+        }
+        if (miAreaJuego.keys && (miAreaJuego.keys[38] || miAreaJuego.keys[87])) {
+            jugador.speedY = -1 * vel;
+        }
+        if (miAreaJuego.keys && miAreaJuego.keys[40]) {
+            jugador.speedY = 1 * vel;
+        }
+        if (miAreaJuego.keys && miAreaJuego.keys[27]) {
+            alert("Voy a salir del juego");
+            clearInterval(miAreaJuego.intervalArea);
+        }
+
+        puntaje.text = "Score: " + miAreaJuego.numFrame;
+        puntaje.update();
+        jugador.nuevaPos();
+        jugador.update();
+
+    }
+
+    function sound(src) {
+        this.sound = document.createElement("audio");
+        this.sound.src = src;
+        this.sound.setAttribute("preload", "auto");
+        this.sound.setAttribute("controls", "none");
+        this.sound.style.display = "none"; // muestra el iconito o el player de audio
+
+        // anexar el objeto a la pagina.
+        document.body.appendChild(this.sound);
+        this.play = function () {
+            this.sound.play();
+        }
+        this.stop = function () {
+            this.sound.pause();
+        }
+        this.vol = function (num) {
+            this.sound.volume = num;
+        }
+    }
+
+</script>
+</body>
+</html>
