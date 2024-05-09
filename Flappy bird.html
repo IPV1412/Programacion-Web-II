@@ -24,11 +24,11 @@
 
     function iniciarJuego() {
         miAreaJuego.inicar();
-        fondo = new componente(800, 570, "IMG/bg.png", 0, 0, "fondo");
+        fondo = new componente(800, 570, "IMG\\bg_nigth.png", 0, 0, "fondo");
         puntaje = new componente("40px", "Consolas", "black", 500, 50, "texto");
-        jugador = new componente(60, 48, "IMG/flappy.png", 10, 120, "imagen");
-        gameOverSound = new sound("IMG/sonido1.wav");
-        mainMusic = new sound("IMG/god.mp3");
+        jugador = new componente(60, 48, "IMG\\flappy.png", 10, 120, "imagen");
+        gameOverSound = new sound("IMG\\sonido1.wav");
+        mainMusic = new sound("IMG\\god.mp3");
         mainMusic.vol(0.5);
         mainMusic.play();
     }
