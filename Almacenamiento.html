@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Almacenamiento</title>
+    <link href= "IMG/1a-swt.png" rel="shortcut icon" type="imagenes/jpg">
+    <link rel="stylesheet" media="all" href="Css - Js/style.css" />
+    <link rel="stylesheet" media="all" href="Css - Js/responsive.css"/>
+</head>
+<body>
+
+<h1>Almacenamiento de Sesion</h1>
+<p id="Dinero"></p>
+<p id="Matricula"></p>
+<p id="Status"></p>
+<p><button onclick="contadito()" type="button">Aprietame duro</button></p>
+<p id="contador">0</p>
+<script>
+    sessionStorage.setItem("Lana",5000);
+    sessionStorage.setItem("ID",666);
+    sessionStorage.setItem("Estatus","activo");
+    console.log(sessionStorage.length);
+
+    document.getElementById("Dinero").innerText=sessionStorage.getItem("Lana");
+    /*
+    Tenemos lo mismo que en localstorage:
+    setItem
+    getItem
+    removeItem
+    clear
+     */
+
+    function contadito(){
+        if(sessionStorage.cuenta){
+            sessionStorage.cuenta = Number(sessionStorage.cuenta)+1;
+        } else {
+            sessionStorage.cuenta=1;
+        }
+        document.getElementById("contador").innerHTML = sessionStorage.cuenta;
+    }
+
+
+
+</script>
+
+</body>
+</html>
