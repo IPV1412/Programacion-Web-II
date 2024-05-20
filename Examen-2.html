@@ -9,6 +9,7 @@
     <style>
         #lienzo {
             border: 5px solid #ff6600;
+            background: #ffffff;
         }
     </style>
 </head>
@@ -45,7 +46,6 @@
                     break;
             }
 
-            // Dibujar la figura en el canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.beginPath();
             switch (figura.tipo) {
@@ -95,12 +95,10 @@
             }, 60000); // 1 minuto
         }
 
-        // Evento de clic en el canvas
         canvas.addEventListener('click', function (e) {
             const x = e.clientX - canvas.offsetLeft;
             const y = e.clientY - canvas.offsetTop;
-
-            // Comprobar si el clic está dentro de la figura
+            ctx.lineWidth = 5;
             switch (figura.tipo) {
                 case 'cuadrado':
                     if (x >= figura.x && x <= figura.x + figura.tamaño &&
@@ -181,7 +179,6 @@
             }
         });
 
-        // Iniciar el juego al cargar la página
         iniciarJuego();
     </script>
 </body>
