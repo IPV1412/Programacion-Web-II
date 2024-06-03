@@ -2,46 +2,63 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Almacenamiento</title>
-    <link href= "IMG/1a-swt.png" rel="shortcut icon" type="imagenes/jpg">
-    <link rel="stylesheet" media="all" href="Css - Js/style.css" />
-    <link rel="stylesheet" media="all" href="Css - Js/responsive.css"/>
+    <title>Title</title>
 </head>
-<body>
+<body background="IMG/Craneo.jpg">
 
-<h1>Almacenamiento de Sesion</h1>
+<h1>Almacenamiento Local</h1>
 <p id="Dinero"></p>
 <p id="Matricula"></p>
 <p id="Status"></p>
-<p><button onclick="contadito()" type="button">Aprietame duro</button></p>
-<p id="contador">0</p>
+<p>De click para cargar la informacion secreta <a href="#" onclick="counter()">Top Secret</a></p>
+<p>Se le ha dado clic #<bold id="clicleado"></bold>
+veces
+</p>
+<p id="lat"></p>
+<p id="long"></p>
 <script>
-    sessionStorage.setItem("Lana",5000);
-    sessionStorage.setItem("ID",666);
-    sessionStorage.setItem("Estatus","activo");
-    console.log(sessionStorage.length);
+    if(!localStorage.getItem("contador")){
+        localStorage.setItem("contador",0);
+    }
+    localStorage.setItem("money", "50");
+    window.localStorage.setItem("Matricula", 284979);
+    console.log(localStorage.getItem("money"));
+    document.getElementById("Dinero").innerHTML = localStorage.getItem("money");
+    document.getElementById("Matricula").innerText = window.localStorage.getItem("Matricula");
+    localStorage.removeItem("money");
+    document.getElementById("Status").innerHTML = "Money borrado<hr>";
+    localStorage.setItem("money2", "50");
 
-    document.getElementById("Dinero").innerText=sessionStorage.getItem("Lana");
-    /*
-    Tenemos lo mismo que en localstorage:
-    setItem
-    getItem
-    removeItem
-    clear
-     */
-
-    function contadito(){
-        if(sessionStorage.cuenta){
-            sessionStorage.cuenta = Number(sessionStorage.cuenta)+1;
+    //localStorage.clear();
+    function counter() {
+        if (localStorage.contador) {
+            localStorage.contador = Number(localStorage.contador) + 1;
         } else {
-            sessionStorage.cuenta=1;
+            localStorage.contador = 1;
         }
-        document.getElementById("contador").innerHTML = sessionStorage.cuenta;
+        document.getElementById("clicleado").innerHTML = localStorage.getItem("contador");
     }
 
+    console.log(navigator.language);
+    console.log(navigator.appCodeName);
+    console.log(navigator.geolocation);
+    console.log(navigator.platform);
+    console.log(navigator.product);
+    console.log(navigator.userAgent);
+    if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(showCoord);
+    }else{
+        console.log("No tienes soporte para coordenadas");
+            }
+
+    function showCoord(position){
+        document.getElementById("lat").innerText =position.coords.latitude;
+        document.getElementById("long").innerText = position.coords.longitude;
+    }
 
 
 </script>
 
+
 </body>
-</html>
+</html> 
