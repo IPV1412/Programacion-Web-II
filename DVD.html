@@ -20,71 +20,64 @@
         <p class="encabezado_J2">Jonathan Nava Noguez IPV1412</p>
     </center>
 
-<script>
-    const canvas = document.getElementById('Canvas');
-    const ctx = canvas.getContext('2d');
-    const text = 'AINZ';
-    const image = new Image();
-    image.src = "IMG/1a-swt.png";
-    const background = new Image();
-    background.src = 'IMG/DVD.png';
+    <script>
+        const canvas = document.getElementById('Canvas');
+        const ctx = canvas.getContext('2d');
+        const text = 'AINZ';
+        const image = new Image();
+        image.src = "IMG/1a-swt.png";
+        const background = new Image();
+        background.src = 'IMG/DVD.png';
 
-    let imageX = canvas.width / 2;
-    let imageY = canvas.height / 2;
-    let textX = canvas.width / 2;
-    let textY = canvas.height / 2;
-    let imageDx = 2;
-    let textDx = -2;
-    let dy = 2;
+        let imageX = canvas.width / 2;
+        let imageY = canvas.height / 2;
+        let textX = canvas.width / 2;
+        let textY = canvas.height / 2;
+        let imageDx = 2;
+        let textDx = -2;
+        let dy = 2;
 
-    function drawBackground() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-    }
-
-    function draw() {
-        // Dibujar la imagen
-        ctx.drawImage(image, imageX, imageY, 150, 150);
-
-        // Dibujar el texto
-        ctx.font = '60px Arial';
-        ctx.fillStyle = "black";
-        ctx.fillText(text, textX, textY);
-    }
-
-    function update() {
-        imageX += imageDx;
-        imageY += dy;
-
-        textX += textDx;
-        textY += dy;
-
-        if (imageX + 150 > canvas.width || imageX < 0) {
-            imageDx = -imageDx;
+        function drawBackground() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
         }
-        if (textX < 0 || textX + ctx.measureText(text).width > canvas.width) {
-            textDx = -textDx;
+
+        function draw() {
+            // Dibujar la imagen
+            ctx.drawImage(image, imageX, imageY, 150, 150);
+
+            // Dibujar el texto
+            ctx.font = '60px Arial';
+            ctx.fillStyle = "black";
+            ctx.fillText(text, textX, textY);
         }
-        if (imageY + 150 > canvas.height || imageY < 0) {
-            dy = -dy;
+
+        function update() {
+            imageX += imageDx;
+            imageY += dy;
+
+            textX += textDx;
+            textY += dy;
+
+            if (imageX + 150 > canvas.width || imageX < 0) {
+                imageDx = -imageDx;
+            }
+            if (textX < 0 || textX + ctx.measureText(text).width > canvas.width) {
+                textDx = -textDx;
+            }
+            if (imageY + 150 > canvas.height || imageY < 0) {
+                dy = -dy;
+            }
         }
-    }
 
-    function animate() {
-        drawBackground();
-        update();
-        draw();
-        requestAnimationFrame(animate);
-    }
+        function animate() {
+            drawBackground();
+            update();
+            draw();
+            requestAnimationFrame(animate);
+        }
 
-    animate();
-</script>
-
-
-
-
-
-
+        animate();
+    </script>
 </body>
-
 </html>

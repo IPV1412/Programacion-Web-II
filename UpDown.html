@@ -1,9 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
         <meta charset="UTF-8">
-        <title>Tetralocura.</title>
-        <link href="IMG/1a-swt.png" rel="shortcut icon" type="imagenes/jpg">>
+        <title>Tetralocura de norte a sur.</title>
+        <link href="IMG/1a-swt.png" rel="shortcut icon" type="imagenes/jpg">
+        <link href="Css - Js/Combo.css" rel="stylesheet" type="text/css">
         <style>
             body {
                 display: flex;
@@ -15,16 +15,20 @@
                 background-size: cover;
             }
     
+            canvas {
+                border: 5px solid black;
+            }
         </style>
     </head>
 <body>
-<canvas id="miCanvas" width="300" height="300" style="border: 3px solid black"></canvas>
-<script>
-    // 1. Preparación del canvas y el acceso al WEBGL
+    <center>
+        <p class="encabezado_L1">Movimiento de atras hacia adelante.</p>
+        <canvas id="miCanvas" width="500" height="500"></canvas>
+        <p class="encabezado_J2">Jonathan Nava Noguez IPV1412</p>
+    </center>
+    <script>
     let canvas = document.getElementById("miCanvas");
     let gl = canvas.getContext("webgl"); // experimental-webgl
-
-    // 2. Definir la geometría y su almacenamiento en memoria (Buffer)
     let vertices = [
         -1,-1,-1, 1,-1,-1, 1, 1,-1,-1, 1,-1, // cara 1 con sus 4 vertices XYZ
         -1,-1, 1, 1,-1, 1, 1, 1, 1,-1, 1, 1, // cara 2
@@ -66,9 +70,6 @@
     gl.bindBuffer(gl.ARRAY_BUFFER, color_buffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
 
-    // 3. Crear y compilar el programa de shader.
-    // // Código del Shader
-    // // agregamos translation para hacer los movimientos.
     let Vertex_code =
         'attribute vec3 position;' +
         'uniform mat4 Pmatrix;' +
@@ -76,9 +77,7 @@
         'uniform mat4 Mmatrix;' +
         'attribute vec3 color;' +
         'varying vec3 vColor;' +
-        //'uniform vec4 translation;' +
         'void main(void){' +
-        //' gl_Position = vec4(coordinates,1.0) + translation;' +
         ' gl_Position =  Pmatrix * Vmatrix * Mmatrix * vec4(position,1.) ;' +
         ' vColor = color;' +
         '}';
@@ -147,9 +146,7 @@
     let proj_matrix = get_proyection(40, canvas.width / canvas.height, 1, 100);
     let mov_matrix = [ 1, 0, 0, 0,  0, 1, 0, 0,  0, 0, 1, 0,  0, 0, 0, 1];
     let view_matrix = [1, 0, 0, 0,  0, 1, 0, 0,  0, 0, 1, 0,  0, 0, 0, 1];
-
-    // translating
-    view_matrix[14] = view_matrix[14] - 6; // Zoom
+    view_matrix[14] = view_matrix[14] - 6; 
 
     /* ----- Rotacion ----- */
     function rotateZ(m, angle) {
@@ -190,6 +187,17 @@
         m[6] = c*m[6]-s*mv4;
         m[10] = c*m[10]- s*mv8;
     }
+    /* ----- UpDown ----- */
+    let speed = 0.01;
+    let direction = 1;
+
+    function upDownMove(m, speed, direction) {
+        m[13] += speed * direction;
+        if (m[13] > 2 || m[13] < -2) {
+            direction *= -1; // Cambia la dirección al alcanzar los límites
+        }
+        return direction;
+    }
 
     /* ----- Dibujar ----- */
     let time_old = 0;
@@ -199,6 +207,8 @@
         rotateY(mov_matrix,dt*0.0004);
         rotateX(mov_matrix,dt*0.002);
         time_old = time;
+
+        direction = upDownMove(mov_matrix, speed, direction);
 
         gl.enable(gl.DEPTH_TEST);
         gl.depthFunc(gl.LEQUAL);

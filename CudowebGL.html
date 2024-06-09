@@ -1,9 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <title>Cubo en web GL.</title>
+        <link href="IMG/1a-swt.png" rel="shortcut icon" type="imagenes/jpg">
+        <style>
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+                background: url('IMG/panal.jpg') no-repeat center center fixed;
+                background-size: cover;
+            }
+        </style>
+    </head>
 <body>
-<canvas id="miCanvas" width="300" height="300" style="border: 1px solid black"></canvas>
+<canvas id="miCanvas" width="300" height="300" style="border: 3px solid black"></canvas>
 <script>
     // 1. Preparación del canvas y el acceso al WEBGL
     let canvas = document.getElementById("miCanvas");
