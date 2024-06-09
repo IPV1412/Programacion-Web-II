@@ -1,14 +1,36 @@
-<html lang="es">
-<head>
-</head>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>ITriangulo en web GL.</title>
+        <link href="IMG/1a-swt.png" rel="shortcut icon" type="imagenes/jpg">
+        <link href="Css - Js/Combo.css" rel="stylesheet" type="text/css">
+        <style>
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+                background: url('IMG/panal.jpg') no-repeat center center fixed;
+                background-size: cover;
+            }
+    
+            canvas {
+                border: 5px solid black;
+            }
+        </style>
+    </head>
 <body>
-<canvas id="miCanvas" width="300" height="300" style="border: 1px solid black"></canvas>
+    <center>
+        <p class="encabezado_L1">Realizar el ejercicio de movimiento de traslado del triangulo de una esquina a la contraesquina.</p>
+        <canvas id="miCanvas" width="500" height="500"></canvas>
+        <p class="encabezado_J2">Jonathan Nava Noguez IPV1412</p>
+    </center>
+
 <script>
-    // 1. Preparación del canvas y el acceso al WEBGL
     let canvas = document.getElementById("miCanvas");
     let gl = canvas.getContext("webgl"); // experimental-webgl
 
-    // 2. Definir la geometría y su almacenamiento en memoria (Buffer)
     let vertices = [
         -0.5, 0.5, 0.0,
         -0.5, -0.5, 0.0,
@@ -16,10 +38,11 @@
     ];  //(-0.5,0.5,0.0), (-0.5,-0.5,0.0),(0.0,-0.5)
 
     let colors = [
-        0, 0, 1,  // Azul
-        0, 1, 0.20,  // Spring Green
-        0.42, 0.65, 0.8  // Sky Blue
-    ]; 
+        1, 0, 0,  // Rojo fuerte
+        1, 0.8, 0,  // Naranja
+        1, 0.5, 0,  // Naranja
+        1, 0, 0   // Rojo fuerte
+    ];
 
     // Crear el objeto nuevo de buffer
     let vertex_buffer = gl.createBuffer();
@@ -35,7 +58,6 @@
     gl.bindBuffer(gl.ARRAY_BUFFER, color_buffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
 
-    // 3. Crear y compilar el programa de shader.
     // Código del Shader
     let Vertex_code =
         'attribute vec3 coordinates;' +
@@ -54,7 +76,6 @@
     // Compilar el shader del vertex
     gl.compileShader(vertShader);
 
-    // Crear el código del Fragment Shader
     let Frag_Code =
         'precision mediump float;' +
         'varying vec3 vColor;' +
@@ -68,7 +89,6 @@
     gl.shaderSource(fragShader, Frag_Code);
     // Compilar el shader del fragment
     gl.compileShader(fragShader);
-
     // Crear los objetos de los shaders para juntarlos
     let shaderProgram = gl.createProgram();
     // Anexar el vertex shader al programa
@@ -79,8 +99,6 @@
     gl.linkProgram(shaderProgram);
     // Usar el programa combinado.
     gl.useProgram(shaderProgram);
-
-    // 4. Asociar los shader al buffer de objetos
     // Vincular el vertex buffer
     gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
     // Obtener el atributo de ubicación/posición
@@ -95,28 +113,23 @@
     gl.vertexAttribPointer(color, 3, gl.FLOAT, false, 0, 0);
     // Habilitar el color.
     gl.enableVertexAttribArray(color);
-
     // Translation
-    let Tx = -0.5, Ty = 0.5, Tz = 0.0;  // Initial translation
+    let Tx = -0.5, Ty = 0.5, Tz = 0.0; 
     let translation = gl.getUniformLocation(shaderProgram, 'translation');
     gl.uniform4f(translation, Tx, Ty, Tz, 0.0);
 
-    // 5. Dibujar
-    gl.clearColor(0.5, 0.5, 0.5, 0.9); // Asignar color a la pantalla por defecto
+    gl.clearColor(0.5, 0.6, 0.8, 0.5); // Asignar color a la pantalla por defecto
     gl.enable(gl.DEPTH_TEST);
     gl.clear(gl.COLOR_BUFFER_BIT); // Limpiar pantalla
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
-
     let velocidadX = 0.001;  // Velocidad de movimiento en X
     let velocidadY = -0.001; // Velocidad de movimiento en Y
-
     function animate(tiempo) {
         // Actualizar la traducción
         Tx += velocidadX;
         Ty += velocidadY;
 
-        // Verificar los límites del canvas y ajustar la velocidad si es necesario
         if (Tx >= 0.5 || Tx <= -0.5) velocidadX *= -1;
         if (Ty >= 0.5 || Ty <= -0.5) velocidadY *= -1;
 
@@ -130,8 +143,6 @@
         // Solicitar el siguiente frame
         window.requestAnimationFrame(animate);
     }
-
-    // Iniciar la animación
     animate(0);
 </script>
 </body>

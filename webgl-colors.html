@@ -1,8 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <title>Colores en web GL.</title>
+        <link href="IMG/1a-swt.png" rel="shortcut icon" type="imagenes/jpg">
+        <link href="Css - Js/Combo.css" rel="stylesheet" type="text/css">
+        <style>
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+                background: url('IMG/panal.jpg') no-repeat center center fixed;
+                background-size: cover;
+            }
+    
+            canvas {
+                border: 1px solid black;
+            }
+        </style>
+    </head>
+<body background="IMG/panal.jpg">
 <canvas id="miCanvas" width="300" height="300" style="border: 1px solid black"></canvas>
 <script>
     // 1. Preparación del canvas y el acceso al WEBGL

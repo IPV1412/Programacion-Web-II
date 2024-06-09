@@ -1,131 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>Introducción a WebGL</title>
+    <link href="IMG/1a-swt.png" rel="shortcut icon" type="imagenes/jpg">
+    <link href="Css - Js/Combo.css" rel="stylesheet" type="text/css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: url('IMG/panal.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        canvas {
+            border: 3px solid black;
+        }
+    </style>
 </head>
-<body background="IMG/Fondo.jpg">
-<canvas id="miCanvas" width="300" height="300" style="border: 1px solid black"></canvas>
+<body>
+<canvas id="miCanvas" width="600" height="600"></canvas>
 <script>
     // 1. Preparación del canvas y el acceso al WEBGL
     let canvas = document.getElementById("miCanvas");
     let gl = canvas.getContext("webgl"); // experimental-webgl
 
-    // 2. Definir la geometría y su almacenamiento en memoria (Buffer)
-    let vertices = [
+    // Definir la geometría y su almacenamiento en memoria (Buffer) para el primer conjunto de datos
+    let vertices1 = [
+        -0.7, -0.1,
+        -0.3,  0.6,
+        -0.3, -0.3,
+         0.2,  0.6,
+         0.3, -0.3,
+         0.7,  0.6,
+         0.5, -0.5,
+         0.25, 0.25,
+         -0.8,-0.8
+    ];
+
+    // Crear el objeto nuevo de buffer para el primer conjunto de datos
+    let vertex_buffer1 = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer1);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices1), gl.STATIC_DRAW);
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+    // Definir la geometría y su almacenamiento en memoria (Buffer) para el segundo conjunto de datos
+    let vertices2 = [
         -0.5, 0.5, 0.0,
         -0.5, -0.5, 0.0,
         0.5, -0.5, 0.0,
         0.5, 0.5, 0.0
-    ];  //(-0.5,0.5,0.0), (-0.5,-0.5,0.0),(0.0,-0.5)
+    ];
 
-    let colors = [0,0,1, 1,0,0, 0,1,0, 1,0,1,]; // azul, rojo, verde, rojo+azul = rosa
-    indices = [3, 2, 1, 3, 1, 0];
+    let colors = [
+        1, 0, 0,  // Rojo
+        1, 0.5, 0,  // Naranja
+        1, 0.25, 0,  // Degradado Naranja-Rojo
+        1, 0.75, 0   // Degradado Naranja-Rojo
+    ];
 
-    // // Crear el objeto nuevo de buffer
-    let vertex_buffer = gl.createBuffer();
-    // // Vincular el buffer con el arreglo.
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
-    // // Pasar los datos del vértice al buffer
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-    // // Desvincular el buffer
+    let indices = [3, 2, 1, 3, 1, 0];
+
+    // Crear el objeto nuevo de buffer para el segundo conjunto de datos
+    let vertex_buffer2 = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer2);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices2), gl.STATIC_DRAW);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
-    // // Crear el objeto nuevo de buffer del indice
     let index_buffer = gl.createBuffer();
-    // // Vincular el buffer con el arreglo.
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index_buffer);
-    // // Pasar los datos del indice al buffer
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
-    // // Desvincular el buffer
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 
     let color_buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER,color_buffer);
-    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(colors),gl.STATIC_DRAW);
-
-    // 3. Crear y compilar el programa de shader.
-    // // Código del Shader
-    /*
-    Cambiambos vec2 a vec3 por que ya estaremos trabajando con x,y,z
-    eliminamos el valor predeterminado de z por que ya lo incluimos en el vec3
-     */
-
-    let Vertex_code =
-        'attribute vec3 coordinates;' +
-        'varying vec3 color;'+
-        'varying vec3 vColor;'+
-        'void main(void){' +
-        ' gl_Position = vec4(coordinates,1.0);' +
-        ' vColor = color;'+
-        '}';
-
-    // //  Crear el shader del vertex.
-    let vertShader = gl.createShader(gl.VERTEX_SHADER);
-    // // Vincular el código con el vertex.
-    gl.shaderSource(vertShader, Vertex_code);
-    // // Compilar el shader del vertex
-    gl.compileShader(vertShader);
-
-
-    // // Crear el código del Fragment Shader
-    let Frag_Code =
-        'precision mediump float;'+
-        'varying vec3 vColor;'+
-        'void main(void){' +
-        ' gl_FragColor = vec4(vColor,1.0);' +
-        '}';
-
-    // //  Crear el shader del Fragment.
-    let fragShader = gl.createShader(gl.FRAGMENT_SHADER);
-    // // Vincular el código con el fragment.
-    gl.shaderSource(fragShader, Frag_Code);
-    // // Compilar el shader del fragment
-    gl.compileShader(fragShader);
-
-    // // Crear los objetos de los shaders para juntarlos
-    let shaderProgram = gl.createProgram(); // shaderProgram[vertShader,fragShader]
-    // // Anexar el vertex shader al programa
-    gl.attachShader(shaderProgram, vertShader);
-    // // Anexar el fragment shader al programa
-    gl.attachShader(shaderProgram, fragShader);
-    // // link/unir ambos programas
-    gl.linkProgram(shaderProgram);
-    // // usar el programa combinado.
-    gl.useProgram(shaderProgram);
-
-    // 4. Asociar los shader al buffer de objetos
-    // // vincular el vertex buffer
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
-    // // vincular el index buffer (agregado)
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index_buffer);
-    // // obtener el atributo de ubicación/posición
-    let coord = gl.getAttribLocation(shaderProgram, "coordinates");
-    // // apuntar el atributo al sistema VBO visual box output
-    gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0); // cambiamos de 2 a 3 por lo de x,y,z
-    // // Activar el atributo
-    gl.enableVertexAttribArray(coord);
-    // // vincular el buffer de color de segunda pasada
     gl.bindBuffer(gl.ARRAY_BUFFER, color_buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
 
-    let color = gl.getAttribLocation(shaderProgram,"color");
-    gl.vertexAttribPointer(color,3,gl.FLOAT,false,0,0);
-    // habilitar el color.
-    gl.enableVertexAttribArray(color);
+    // 3. Crear y compilar el programa de shader
+    let Vertex_code1 =
+        'attribute vec2 coordinates;' +
+        'void main(void){' +
+        ' gl_Position = vec4(coordinates, 0.0, 1.0);' +
+        '}';
 
-    // 5. Dibujar
-    gl.clearColor(0.5, 0.5, 0.5, 0.9); // asignar color a la pantalla por defecto
-    gl.enable(gl.DEPTH_TEST);
-    gl.clear(gl.COLOR_BUFFER_BIT); // limpiar pantalla
+    let Vertex_code2 =
+        'attribute vec3 coordinates;' +
+        'varying vec3 color;' +
+        'varying vec3 vColor;' +
+        'void main(void){' +
+        ' gl_Position = vec4(coordinates, 1.0);' +
+        ' vColor = color;' +
+        '}';
+
+    let vertShader1 = gl.createShader(gl.VERTEX_SHADER);
+    gl.shaderSource(vertShader1, Vertex_code1);
+    gl.compileShader(vertShader1);
+
+    let vertShader2 = gl.createShader(gl.VERTEX_SHADER);
+    gl.shaderSource(vertShader2, Vertex_code2);
+    gl.compileShader(vertShader2);
+
+    let Frag_Code1 =
+        'void main(void){' +
+        ' gl_FragColor = vec4(0.0, 0.0, 0.0, 0.1);' +
+        '}';
+
+    let Frag_Code2 =
+        'precision mediump float;' +
+        'varying vec3 vColor;' +
+        'void main(void){' +
+        ' gl_FragColor = vec4(vColor, 1.0);' +
+        '}';
+
+    let fragShader1 = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(fragShader1, Frag_Code1);
+    gl.compileShader(fragShader1);
+
+    let fragShader2 = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(fragShader2, Frag_Code2);
+    gl.compileShader(fragShader2);
+
+    let shaderProgram1 = gl.createProgram();
+    gl.attachShader(shaderProgram1, vertShader1);
+    gl.attachShader(shaderProgram1, fragShader1);
+    gl.linkProgram(shaderProgram1);
+
+    let shaderProgram2 = gl.createProgram();
+    gl.attachShader(shaderProgram2, vertShader2);
+    gl.attachShader(shaderProgram2, fragShader2);
+    gl.linkProgram(shaderProgram2);
+
+    // Dibujar la primera geometría
+    gl.useProgram(shaderProgram1);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer1);
+    let coord1 = gl.getAttribLocation(shaderProgram1, "coordinates");
+    gl.vertexAttribPointer(coord1, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(coord1);
+    gl.clearColor(0.5, 0.5, 0.5, 0.9);
+    gl.clear(gl.COLOR_BUFFER_BIT);
     gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.drawArrays(gl.TRIANGLES, 0, vertices1.length / 2);
+
+    // Dibujar la segunda geometría
+    gl.useProgram(shaderProgram2);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer2);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index_buffer);
+    let coord2 = gl.getAttribLocation(shaderProgram2, "coordinates");
+    gl.vertexAttribPointer(coord2, 3, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(coord2);
+    gl.bindBuffer(gl.ARRAY_BUFFER, color_buffer);
+    let color = gl.getAttribLocation(shaderProgram2, "color");
+    gl.vertexAttribPointer(color, 3, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(color);
     gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
-    /*
-    TRIANGLES
-    TRIANGLES_STRIP -> cuando tenemos mas vertices.
-    TRIANGLES_FAN  -> cuando tenemos mas vertices.
-    POINTS
-    LINES -> 2 vertices por linea
-    LINE_LOOP -> traza y cierra la figura
-    LINE_STRIP -> Traza las lineas.
-     */
 </script>
 </body>
 </html>
