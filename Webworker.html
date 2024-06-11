@@ -1,0 +1,62 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>WebworkerL</title>
+        <link href="IMG/1a-swt.png" rel="shortcut icon" type="imagenes/jpg">
+        <style>
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+                background: url('IMG/panal.jpg') no-repeat center center fixed;
+                background-size: cover;
+            }
+        </style>
+    </head>
+<body>
+<p>Operador de Multiplicacion :
+    <output id="salida"></output>
+</p>
+<p>Operador de Multiplicacion :
+    <output id="salida2"></output>
+</p>
+<button class="button" onclick="iniciarWorker()">Iniciar Hilo/Trabajador</button><br>
+<button class="button" onclick="detenerWorker()">Detener Hilo/Trabajador</button><br>
+<button class="button" onclick="iniciarSinWorker()">Iniciar tabla de multiplicacion</button><br>
+<script>
+    let worker1;
+
+    function iniciarSinWorker() {
+        let index = 0;
+        do {
+            document.getElementById("salida2").innerHTML =
+                "2 x " + index + " = " + index * 2;
+            index++;
+        } while (index <2000000);
+        console.log("Listo");
+    }
+
+    function iniciarWorker() {
+        if (typeof (Worker) != "undefined") {
+            if (typeof (worker1) == "undefined") {
+                worker1 = new Worker("ejemplo.js");
+            }
+            worker1.onmessage = function (event) {
+                document.getElementById("salida").innerHTML = event.data;
+            }; // onmessage seria equivalente a un eventlistener
+        } else {
+            document.getElementById("salida").innerHTML =
+                "No hay compatibilidad con webWorker!";
+        }
+    }
+
+    function detenerWorker() {
+        worker1.terminate();
+        worker1 = undefined;
+    }
+
+</script>
+</body>
+</html>
