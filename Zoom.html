@@ -1,7 +1,8 @@
 <html>
+
 <head>
     <meta charset="UTF-8">
-    <title>Tetralocura por todos lados.</title>
+    <title>Tetralocura con zoom.</title>
     <link href="IMG/1a-swt.png" rel="shortcut icon" type="imagenes/jpg">
     <link href="Css - Js/Combo.css" rel="stylesheet" type="text/css">
     <style>
@@ -23,46 +24,48 @@
 
 <body>
     <center>
-        <p class="encabezado_L1">Movimiento girando por toda la pantalla.</p>
-        <canvas id="miCanvas" width="600" height="500"></canvas>
+        <p class="encabezado_L1">Movimiento de atrás hacia adelante.</p>
+        <canvas id="miCanvas" width="500" height="500"></canvas>
         <p class="encabezado_J2">Jonathan Nava Noguez IPV1412</p>
     </center>
     <script>
         let canvas = document.getElementById("miCanvas");
-        let gl = canvas.getContext("webgl");
+        let gl = canvas.getContext("webgl"); // experimental-webgl
         let vertices = [
-            -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, // cara 1 con sus 4 vertices XYZ
-            -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, // cara 2
-            -0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, // cara 3
-            0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, // cara 4
-            -0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, // cara 5
-            -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5 // cara 6
+            -1, -1, -1, 1, -1, -1, 1, 1, -1, -1, 1, -1, // cara 1 con sus 4 vertices XYZ
+            -1, -1, 1, 1, -1, 1, 1, 1, 1, -1, 1, 1, // cara 2
+            -1, -1, -1, -1, 1, -1, -1, 1, 1, -1, -1, 1, // cara 3
+            1, -1, -1, 1, 1, -1, 1, 1, 1, 1, -1, 1,
+            -1, -1, -1, -1, -1, 1, 1, -1, 1, 1, -1, -1,
+            -1, 1, -1, -1, 1, 1, 1, 1, 1, 1, 1, -1
         ];
-
 
         let colors = [
-            .5, .5, 1, 1, .5, .5, .25, .25, .25, .25, 1, .5,
-            1, 0, 0, 1, 0.5, 0, 1, 0.25, 0, // Rojo a naranja claro
-            1, 0.25, 0, 1, 0.5, 0, 1, 0, 0, // Naranja claro a naranja
-            1, 0, 0, 1, 0.5, 0, 1, 0.25, 0, // Naranja a naranja claro
-            1, 0, 0, 1, 0.5, 0, 1, 0.25, 0,
+            5, 3, 7, 5, 3, 7, 5, 3, 7, 5, 3, 7,
+            1, 1, 3, 1, 1, 3, 1, 1, 3, 1, 1, 3,
+            0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0,
             1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0,
-            1, 0.5, 0, 1, 0.5, 0, 1, 0.5, 0, 1, 0.5, 0,
+            1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
             .5, .5, 1, 1, .5, .5, .25, .25, .25, .25, 1, .5
         ];
-
         let indices = [
             0, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7,
             8, 9, 10, 8, 10, 11, 12, 13, 14, 12, 14, 15,
             16, 17, 18, 16, 18, 19, 20, 21, 22, 20, 22, 23
         ];
 
+        // // Crear el objeto nuevo de buffer
         let vertex_buffer = gl.createBuffer();
+        // // Vincular el buffer con el arreglo.
         gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
+        // // Pasar los datos del vértice al buffer
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 
+        // // Crear el objeto nuevo de buffer del índice
         let index_buffer = gl.createBuffer();
+        // // Vincular el buffer con el arreglo.
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index_buffer);
+        // // Pasar los datos del índice al buffer
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
 
         let color_buffer = gl.createBuffer();
@@ -77,10 +80,12 @@
             'attribute vec3 color;' +
             'varying vec3 vColor;' +
             'void main(void){' +
-            ' gl_Position = Pmatrix * Vmatrix * Mmatrix * vec4(position,1.);' +
+            ' gl_Position =  Pmatrix * Vmatrix * Mmatrix * vec4(position,1.) ;' +
             ' vColor = color;' +
             '}';
+        /* Cambié el + por * */
 
+        // // Crear el código del Fragment Shader
         let Frag_Code =
             'precision mediump float;' +
             'varying vec3 vColor;' +
@@ -88,30 +93,45 @@
             ' gl_FragColor = vec4(vColor,1.);' +
             '}';
 
+        // // Crear el shader del vertex
         let vertShader = gl.createShader(gl.VERTEX_SHADER);
+        // // Vincular el código con el vertex
         gl.shaderSource(vertShader, Vertex_code);
+        // // Compilar el shader del vertex
         gl.compileShader(vertShader);
 
+        // // Crear el shader del Fragment
         let fragShader = gl.createShader(gl.FRAGMENT_SHADER);
+        // // Vincular el código con el fragment
         gl.shaderSource(fragShader, Frag_Code);
+        // // Compilar el shader del fragment
         gl.compileShader(fragShader);
 
-        let shaderProgram = gl.createProgram();
+        // // Crear los objetos de los shaders para juntarlos
+        let shaderProgram = gl.createProgram(); // shaderProgram[vertShader,fragShader]
+        // // Anexar el vertex shader al programa
         gl.attachShader(shaderProgram, vertShader);
+        // // Anexar el fragment shader al programa
         gl.attachShader(shaderProgram, fragShader);
+        // // link/unir ambos programas
         gl.linkProgram(shaderProgram);
+
+        /* ----- Asociar los atributos hacia el vertice shader -----*/
         let Pmatrix = gl.getUniformLocation(shaderProgram, "Pmatrix");
         let Vmatrix = gl.getUniformLocation(shaderProgram, "Vmatrix");
         let Mmatrix = gl.getUniformLocation(shaderProgram, "Mmatrix");
 
         gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
-        let positionAttribLocation = gl.getAttribLocation(shaderProgram, "position");
-        gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(positionAttribLocation);
+
+        let position = gl.getAttribLocation(shaderProgram, "position");
+        gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(position);
         gl.bindBuffer(gl.ARRAY_BUFFER, color_buffer);
-        let colorAttribLocation = gl.getAttribLocation(shaderProgram, "color");
-        gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(colorAttribLocation);
+
+        let color = gl.getAttribLocation(shaderProgram, "color");
+        gl.vertexAttribPointer(color, 3, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(color);
+        // // usar el programa combinado.
         gl.useProgram(shaderProgram);
 
         /* ---- Matrices ---- */
@@ -130,7 +150,7 @@
         let view_matrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
         view_matrix[14] = view_matrix[14] - 6;
 
-        /* ----- Rotacion ----- */
+        /* ----- Rotación ----- */
         function rotateZ(m, angle) {
             let c = Math.cos(angle);
             let s = Math.sin(angle);
@@ -170,32 +190,28 @@
             m[10] = c * m[10] - s * mv8;
         }
 
-        /* ----- Rebote ----- */
-        let x = 0, y = 0, z = 0;
-        let dx = 0.01, dy = 0.01, dz = 0.01;
+        /* ----- ForwardBackward ----- */
+        let speed = 0.01;
+        let direction = 1;
+
+        function forwardBackwardMove(m, speed, direction) {
+            m[14] += speed * direction;
+            if (m[14] > 2 || m[14] < -6) {
+                direction *= -1; // Cambia la dirección al alcanzar los límites
+            }
+            return direction;
+        }
 
         /* ----- Dibujar ----- */
         let time_old = 0;
         let animate = function (time) {
             let dt = time - time_old;
-
-            // Movimiento de rebote
-            x += dx;
-            y += dy;
-            z += dz;
-
-            if (x > 2 || x < -2) dx = -dx;
-            if (y > 2 || y < -2) dy = -dy;
-            if (z > -4 || z < -10) dz = -dz;
-
-            mov_matrix[12] = x;
-            mov_matrix[13] = y;
-            mov_matrix[14] = z;
-
             rotateZ(mov_matrix, dt * 0.0009);
             rotateY(mov_matrix, dt * 0.0004);
             rotateX(mov_matrix, dt * 0.002);
             time_old = time;
+
+            direction = forwardBackwardMove(mov_matrix, speed, direction);
 
             gl.enable(gl.DEPTH_TEST);
             gl.depthFunc(gl.LEQUAL);
@@ -209,10 +225,12 @@
             gl.uniformMatrix4fv(Mmatrix, false, mov_matrix);
 
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index_buffer);
-            gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+            gl.drawElements(gl.LINE_LOOP, indices.length, gl.UNSIGNED_SHORT, 0);
             window.requestAnimationFrame(animate);
-        };
+        }
         animate(0);
+
     </script>
 </body>
+
 </html>
