@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Particles</title>
+</head>
+<body>
+<canvas></canvas>
+<script>
+    const canvas = document.querySelector('canvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = innerWidth; // 100% del ancho de la ventana
+    canvas.height = innerHeight; // 100% de la altura ventana
+
+    let time = 1000;
+    const numParticulas = 5;
+    let hueChange = 0.01;
+    let particleSize = 10;
+
+    const mouse = {
+        x: innerWidth / 2,
+        y: innerHeight / 2
+    };
+
+    // Event Listeners
+    addEventListener('mousemove', (event) => {
+        mouse.x = event.clientX;
+        mouse.y = event.clientY;
+    });
+
+    addEventListener('resize', () => {
+        canvas.width = innerWidth;
+        canvas.height = innerHeight;
+        console.log(canvas);
+        init();
+    });
+
+    // Objeto
+    class Parti {
+        constructor(x, y, radio, color, velocidad) {
+            this.x = x;
+            this.y = y;
+            this.radio = radio;
+            this.color = color;
+            this.velocidad = velocidad;
+            this.ttl = 1000; //Time To Live
+        }
+
+        dibujar() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radio, 0, Math.PI * 2, false);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+            ctx.closePath();
+        };
+
+        actualizar() {
+            this.dibujar();
+            this.x += this.velocidad.x;
+            this.y += this.velocidad.y;
+            this.ttl--;
+        };
+    }
+
+    // Implementación
+    let particulas;
+
+    function init() {
+        particulas = [];
+    }
+
+    let hue = 0;
+    let hueRadianes = 0;
+
+    function generarAnillo() {
+        setTimeout(generarAnillo, time);
+        hue = Math.sin(hueRadianes);
+
+        for (let i = 0; i < numParticulas; i++) {
+            // Circulo completo = pi * 2 radian
+            const radian = (Math.PI * 2) / numParticulas;
+            const x = mouse.x;
+            const y = mouse.y;
+            particulas.push(
+                //hsl = Hue Saturation Light
+                new Parti(x, y, particleSize, `hsl(${Math.abs(hue * 360)},50%,50%)`, {
+                    x: Math.cos(radian * i) * 3,
+                    y: Math.sin(radian * i) * 3
+                })
+            );
+        }
+        hueRadianes += hueChange;
+    }
+
+    // Animacion del ciclo
+    function animate() {
+        requestAnimationFrame(animate);
+        ctx.fillStyle = "rgba(0,0,0,0.1)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        particulas.forEach((parti, i) => {
+            if (parti.ttl < 0) {
+                parti.splice(i, 1);
+            } else {
+                parti.actualizar();
+            }
+        })
+    }
+
+    init();
+    animate();
+    generarAnillo();
+
+</script>
+</body>
+</html>
