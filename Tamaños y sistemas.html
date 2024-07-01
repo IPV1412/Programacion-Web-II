@@ -1,0 +1,67 @@
+<html lang="en">
+<head>
+    <title>deteccion de tamaños y sistemas</title>
+</head>
+<body>
+<script>
+    function isMobil() {
+        const regex = /Mobi|Android|webOS|iPhone|iPad|Blackberry|IEMobile|Opera Mini/i;
+        return regex.test(navigator.userAgent);
+    }
+
+    if (isMobil()) {
+        console.log("Dispositivo Mobil Detectado.");
+        // llamar codigo para mobiles. ej: function mobileCode();
+    } else {
+        console.log("Dispositivo PC Detectado.");
+        //  llamar codigo para pc Function pcCode();
+    }
+
+    function tieneSoporteTouch() {
+        return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    }
+
+    if (tieneSoporteTouch()) {
+        console.log("Dispositivo mobil o PC con capacidad de Touch");
+    } else {
+        console.log("Dispositivo sin capacidad de touch :(");
+    }
+
+    function esMobil2() {
+        const minWidth = 768; // el tamaño tradicional de un dispositivo de escritorio.
+        return window.innerWidth < minWidth || screen.width < minWidth;
+    }
+
+    if (esMobil2()) {
+        console.log("Dispositivo movil detectado por tamaño");
+    } else{
+        console.log("Dispositivo de Escritorio detectado por tamaño");
+    }
+
+    console.log(navigator);
+
+
+    /* hay librerias como ejemplo:
+    Mobile detect
+    browser
+    platform
+     */
+
+    /*
+        A-Z|a-z|0-9|#$
+        Hola (ok)
+        Hola$ (ok)
+        Hola_chido (bad)
+
+        if(password.length()<8){
+        throw error;
+
+        if(contains(password.explode,regex){
+        continue;
+        else{
+        throw error;
+        }
+     */
+</script>
+</body>
+</html>
