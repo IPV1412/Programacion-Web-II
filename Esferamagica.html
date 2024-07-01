@@ -1,0 +1,104 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Esferas Magicas</title>
+    <link href="IMG/1a-swt.png" rel="shortcut icon" type="imagenes/jpg">
+    <link href="Css - Js/Combo.css" rel="stylesheet" type="text/css">
+    <style>
+        body {
+            margin: 0;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body background="IMG/panal.jpg">
+    <center>
+        <p class="encabezado_L1">Esferas Magicas.</p> <br>
+    </center>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        let scene, camera, renderer, particles = [], mouse, time = 1000, numParticles = 5, hueChange = 0.01, particleSize = 0.1;
+
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 5;
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+
+            const pointLight = new THREE.PointLight(0xffffff, 1);
+            pointLight.position.set(10, 10, 10);
+            scene.add(pointLight);
+
+            // Eventos
+            mouse = new THREE.Vector2();
+            window.addEventListener('mousemove', (event) => {
+                mouse.x = (event.clientX / window.innerWidth) * 2 - 0.5;
+                mouse.y = -(event.clientY / window.innerHeight) * 2 + 0.5;
+            });
+
+            window.addEventListener('resize', () => {
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+            });
+
+            generateRing();
+            animate();
+        }
+
+        function generateParticle(x, y, hue) {
+            const geometry = new THREE.SphereGeometry(particleSize, 32, 32);
+            const material = new THREE.MeshStandardMaterial({ color: new THREE.Color(`hsl(${Math.abs(hue * 360)}, 50%, 50%)`) });
+            const particle = new THREE.Mesh(geometry, material);
+
+            particle.position.set(x, y, 0);
+            particle.velocity = new THREE.Vector3(Math.cos(hue) * 0.03, Math.sin(hue) * 0.03, 0);
+            particle.ttl = 1000;
+
+            particles.push(particle);
+            scene.add(particle);
+        }
+
+        let hueRadianes = 0;
+        function generateRing() {
+            setTimeout(generateRing, time);
+            let hue = Math.sin(hueRadianes);
+
+            for (let i = 0; i < numParticles; i++) {
+                const radian = (Math.PI * 2) / numParticles;
+                generateParticle(mouse.x * 5, mouse.y * 5, radian * i + hue);
+            }
+            hueRadianes += hueChange;
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+
+            particles.forEach((particle, index) => {
+                if (particle.ttl < 0) {
+                    scene.remove(particle);
+                    particles.splice(index, 1);
+                } else {
+                    particle.position.add(particle.velocity);
+                    particle.ttl--;
+                }
+            });
+        }
+
+        init();
+    </script>
+    <center>
+        <p class="encabezado_J2"> Jonathan Nava Noguez IPV1412 </p>
+    </center>
+</body>
+
+</html>
